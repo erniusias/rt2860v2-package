@@ -32,12 +32,12 @@ prepare_config() {
 	config_get country $device country
 	
 #是否有MAC过滤
-	config_get macpolicy $device macpolicy
+	#config_get macfilter $device macfilter
 
 #MAC地址过滤列表
-	config_get maclist $device maclist
+	#config_get maclist $device maclist
 #字符格式转义
-	ra_maclist="${maclist// /;};"
+	#ra_maclist="${maclist// /;};"
 #是否支持GREEN AP功能
 	config_get_bool greenap $device greenap 0
 
@@ -91,6 +91,13 @@ for vif in $vifs; do
 	*)
 		;;
 	esac
+#是否有MAC过滤
+	config_get macfilter $vif macfilter
+
+#MAC地址过滤列表
+	config_get maclist $vif maclist
+#字符格式转义
+	ra_maclist="${maclist// /;};"
 done
 
 #开始准备HT模式配置，注意HT模式仅在11N下有效。
@@ -127,7 +134,7 @@ done
     }
 
 #开始判断WiFi的MAC过滤方式.
-    case "$macpolicy" in
+    case "$macfilter" in
 	allow|2)
 	ra_macfilter=1;
 	;;
@@ -142,7 +149,7 @@ done
 	cat > /tmp/RT2860.dat<<EOF
 #The word of "Default" must not be removed
 Default
-CountryRegion=0
+CountryRegion=1
 CountryRegionABand=7
 CountryCode=${country:-US}
 BssidNum=${num:-1}
